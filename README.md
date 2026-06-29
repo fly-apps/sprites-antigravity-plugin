@@ -24,10 +24,10 @@ The Sprites Plugin gives Antigravity reusable Sprites workflows, safety guardrai
 
 ## Install
 
-From this repository:
+Install from the repository:
 
 ```sh
-agy plugin install /Users/aezell/workspace/superfly/sprites-antigravity-plugin
+agy plugin install https://github.com/fly-apps/sprites-antigravity-plugin
 ```
 
 Then open Antigravity's MCP manager with `/mcp` and authenticate the `sprites` server. Use restricted access unless your workflow needs broader organization control.
