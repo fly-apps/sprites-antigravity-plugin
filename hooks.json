@@ -1,0 +1,60 @@
+{
+  "sprites-safety-guard": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.gemini/config/plugins/sprites-antigravity-plugin/scripts/sprites_hook.py safety",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "sprites-checkpoint-nudge": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.gemini/config/plugins/sprites-antigravity-plugin/scripts/sprites_hook.py checkpoint",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "sprites-auto-sync": {
+    "enabled": false,
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.gemini/config/plugins/sprites-antigravity-plugin/scripts/sprites_hook.py auto-sync",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "sprites-remote-test-routing": {
+    "enabled": false,
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.gemini/config/plugins/sprites-antigravity-plugin/scripts/sprites_hook.py remote-test",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

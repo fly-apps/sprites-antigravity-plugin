@@ -1,0 +1,46 @@
+# Sprites Plugin
+
+Use Sprites from Antigravity CLI (`agy`) as persistent, isolated Linux development environments for building, testing, previewing, and debugging code. Sprites keep state between sessions, so Antigravity can work in a real project environment without crowding your laptop with packages, services, databases, or long-running processes.
+
+The Sprites Plugin gives Antigravity reusable Sprites workflows, safety guardrails, and convenient commands for common development tasks.
+
+## What You Can Do
+
+- Create fresh, named Sprites for risky changes, experiments, or preview environments.
+- Run commands and tests inside a Sprite instead of your local machine.
+- Manage long-running services such as web servers, workers, and daemons.
+- Create checkpoints before migrations, package upgrades, and other high-risk work.
+- Inspect running Sprites, services, checkpoints, and likely stale environments.
+- Clean up old Sprites safely with confirmation before destructive actions.
+
+## Commands
+
+- `/sprites:list`: See active Sprites, status, services, exposure, and stale candidates.
+- `/sprites:new <purpose>`: Create a fresh Sprite for a task.
+- `/sprites:run <command>`: Run a shell command inside a selected Sprite.
+- `/sprites:checkpoint <reason>`: Create, list, inspect, or restore checkpoints.
+- `/sprites:service <command>`: Start, restart, expose, inspect, or debug services.
+- `/sprites:cleanup`: Find and safely remove idle Sprites and checkpoints.
+
+## Install
+
+From this repository:
+
+```sh
+agy plugin install /Users/aezell/workspace/superfly/sprites-antigravity-plugin
+```
+
+Then open Antigravity's MCP manager with `/mcp` and authenticate the `sprites` server. Use restricted access unless your workflow needs broader organization control.
+
+## Safety
+
+Sprites are stateful environments, so the Sprites Plugin nudges Antigravity to be careful around actions that can affect durable state. It asks for confirmation before destructive operations such as destroying Sprites, restoring checkpoints, deleting checkpoints, or widening service/network exposure. It also prompts for checkpoints before risky commands like migrations, package upgrades, and broad filesystem changes.
+
+## Optional Hooks
+
+Two hooks are disabled by default:
+
+- `sprites-auto-sync`
+- `sprites-remote-test-routing`
+
+Enable them for workspaces that want file-edit sync reminders or prompts to route test commands into a Sprite.

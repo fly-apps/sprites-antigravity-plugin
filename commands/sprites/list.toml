@@ -1,0 +1,6 @@
+description = "List Sprites, status, services, exposure, and likely stale environments."
+prompt = """
+Use the hosted `sprites` MCP server to list and summarize Sprites.
+
+Show each Sprite's exact name, status, age if available, IP or URL details if available, running services, public exposure, and whether it appears plugin-managed. Highlight likely stale Sprites, but do not delete anything. If a target Sprite should be chosen, recommend the safest matching exact name.
+"""

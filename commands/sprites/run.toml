@@ -1,0 +1,8 @@
+description = "Run a shell command inside a selected Sprite via MCP."
+prompt = """
+Use the hosted `sprites` MCP server exec tools to run this command inside a Sprite:
+
+{{args}}
+
+Identify the target Sprite by exact name, listing Sprites first if ambiguous. For high-risk commands, create or verify a checkpoint before running. Run in the intended working directory, prefer Sprites services for long-running processes, and summarize the command, exit status, important output, and follow-up steps.
+"""

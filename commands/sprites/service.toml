@@ -1,0 +1,8 @@
+description = "Manage long-running services in a Sprite."
+prompt = """
+Use the hosted `sprites` MCP server service tools for this service request:
+
+{{args}}
+
+Identify the target Sprite and inspect existing services. Prefer stable names such as `web`, `worker`, or `preview`. Configure command, working directory, environment, and port intentionally. Start or restart the service, inspect recent logs, ask before making URLs public or widening network access, and report service name, status, port, URL/auth mode, and log highlights.
+"""

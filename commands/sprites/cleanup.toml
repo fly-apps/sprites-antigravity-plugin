@@ -1,0 +1,6 @@
+description = "Safely clean up idle Sprites, checkpoints, services, and sessions."
+prompt = """
+Use the hosted `sprites` MCP server to find stale Sprites, checkpoints, services, and exec sessions.
+
+List Sprites and identify likely cleanup candidates, especially old `mcp-` prefixed environments. Inspect services and checkpoints before proposing deletion. Present a cleanup plan with exact Sprite names and destructive effects. Ask for confirmation before destroying Sprites or deleting checkpoints, then report what was deleted and what was intentionally kept.
+"""

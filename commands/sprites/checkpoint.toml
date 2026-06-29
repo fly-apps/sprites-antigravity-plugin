@@ -1,0 +1,8 @@
+description = "Create, list, inspect, or restore Sprite checkpoints."
+prompt = """
+Use the hosted `sprites` MCP server checkpoint tools for this checkpoint request:
+
+{{args}}
+
+Identify the target Sprite by exact name. For creation, use a short reason-based description. For listing or inspection, summarize checkpoint IDs, descriptions, and timestamps if available. For restore, require clear confirmation that restoring rewinds filesystem state and discards newer changes, then inspect Sprite state afterward.
+"""

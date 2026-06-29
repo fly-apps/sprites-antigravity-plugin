@@ -1,0 +1,8 @@
+description = "Create a fresh Sprite for a purpose using a safe plugin-managed prefix."
+prompt = """
+Use the hosted `sprites` MCP server to create a fresh Sprite for this purpose:
+
+{{args}}
+
+Choose a clear name with a safe prefix such as `mcp-` unless the user supplied an exact name. State the purpose before creation, wait until the Sprite is usable if startup status is reported, optionally run a small verification command, then report the exact Sprite name and next recommended action.
+"""
