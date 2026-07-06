@@ -4,7 +4,6 @@
 
 - Destroying a Sprite.
 - Restoring a checkpoint.
-- Deleting checkpoints.
 - Updating outbound network policy.
 - Making a service public or exposing a new URL.
 - Changing privilege/resource policy.
@@ -26,3 +25,5 @@ Use checkpoint names or descriptions that include the reason, such as `before-no
 ## Recovery
 
 Before restoring, explain that restore rewinds filesystem state and discards work after the checkpoint. List newer checkpoints or relevant files first when possible.
+
+There is no tool to delete an individual checkpoint. Checkpoints are removed only by destroying the Sprite.

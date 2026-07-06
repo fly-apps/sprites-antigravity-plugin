@@ -13,7 +13,7 @@ Use the hosted Sprites MCP server configured as `sprites`. Do not build, scaffol
 - Use a restricted Sprites OAuth token and a clear prefix such as `mcp-` unless the user explicitly needs broader organization access.
 - Prefer fresh Sprites for experiments and risky generated code.
 - Create or verify a recent checkpoint before package upgrades, migrations, bulk filesystem edits, service rewrites, network policy changes, or destructive cleanup.
-- Ask before destroying Sprites, restoring checkpoints, deleting checkpoints, widening network/resource/privilege policies, or making a service public.
+- Ask before destroying Sprites, restoring checkpoints, widening network/resource/privilege policies, or making a service public.
 - Use exact names and IDs from `list_sprites`, checkpoint lists, service lists, or exec-session lists. Do not guess resource identifiers.
 
 ## Common Workflow
