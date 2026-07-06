@@ -2,17 +2,19 @@
 
 Use Sprites services for long-running processes such as web servers, workers, daemons, and preview apps.
 
+There is no single restart tool; restart a service by stopping it and starting it again.
+
 ## Service Workflow
 
 1. Inspect existing services before adding a new one.
 2. Prefer stable service names based on the project or role, such as `web`, `worker`, or `preview`.
 3. Set the command, working directory, environment, and port intentionally.
-4. Start or restart the service.
+4. Start the service (or stop then start to restart).
 5. Inspect status and recent logs.
 6. If a URL is needed, confirm whether it should remain private/authenticated or become public.
 
 ## Debugging
 
 - Read logs before changing code.
-- Restart only the affected service.
+- Restart only the affected service (stop then start it).
 - Include service name, port, URL/auth mode, and log summary in the final response.
