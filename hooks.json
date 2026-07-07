@@ -2,7 +2,7 @@
   "sprites-safety-guard": {
     "PreToolUse": [
       {
-        "matcher": "*",
+        "matcher": ".*(destroy_sprite|delete_sprite|checkpoint_restore|restore_checkpoint|delete_checkpoint|policy_network|network_policy|privilege_policy|resource_policy|service_create|service_start|service_update|make_public).*",
         "hooks": [
           {
             "type": "command",
@@ -16,26 +16,11 @@
   "sprites-checkpoint-nudge": {
     "PreToolUse": [
       {
-        "matcher": "*",
+        "matcher": ".*exec.*",
         "hooks": [
           {
             "type": "command",
             "command": "$HOME/.gemini/config/plugins/sprites-antigravity-plugin/scripts/sprites_hook.py checkpoint",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  },
-  "sprites-auto-sync": {
-    "enabled": false,
-    "PostToolUse": [
-      {
-        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$HOME/.gemini/config/plugins/sprites-antigravity-plugin/scripts/sprites_hook.py auto-sync",
             "timeout": 10
           }
         ]
