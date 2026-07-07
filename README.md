@@ -38,9 +38,8 @@ Sprites are stateful environments, so the Sprites Plugin nudges Antigravity to b
 
 ## Optional Hooks
 
-Two hooks are disabled by default:
+One hook is disabled by default:
 
-- `sprites-auto-sync`
 - `sprites-remote-test-routing`
 
-Enable them for workspaces that want file-edit sync reminders or prompts to route test commands into a Sprite.
+Enable it for workspaces that want test commands routed into a Sprite instead of running locally.

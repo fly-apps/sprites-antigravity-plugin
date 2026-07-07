@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Antigravity hook helpers for the Sprites Plugin.
 
-The hook contract is JSON on stdin and JSON on stdout. Keep this script
+The hook contract is JSON on stdin and JSON on stdout. A pre-tool hook returns
+a `decision` of "allow", "ask", or "deny" (Antigravity fails open when the
+decision is missing or unknown, so the key name matters). Keep this script
 dependency-free so the Sprites Plugin works immediately after installation.
 """
 
@@ -13,18 +15,28 @@ import sys
 from typing import Any
 
 
+# Destructive or irreversible Sprite operations. Matched against the serialized
+# tool call, so these fire whether the MCP tool name is bare (`destroy_sprite`)
+# or server-prefixed (`sprites__destroy_sprite`).
 DESTRUCTIVE_PATTERNS = [
     r"destroy[_-]?sprite",
     r"delete[_-]?sprite",
+    r"checkpoint[_-]?restore",
     r"restore[_-]?(sprite|checkpoint)",
     r"delete[_-]?checkpoint",
+    r"policy[_-]?network[_-]?(update|set)",
     r"update[_-]?network[_-]?policy",
-    r"set[_-]?network[_-]?policy",
-    r"make[_-]?public",
-    r"public[_-]?url",
-    r"expose[_-]?(service|port|url)",
     r"privilege[_-]?policy",
     r"resource[_-]?policy",
+]
+
+# Widening exposure is only worth confirming when it is actually being enabled.
+# Requiring a truthy value avoids nagging when a service is created private
+# (e.g. `public_url: false`).
+EXPOSURE_PATTERNS = [
+    r"make[_-]?public",
+    r'"?(is[_-]?)?public(_?url)?"?\s*[:=]\s*"?true',
+    r'"?expose[_-]?(service|port|url)"?\s*[:=]\s*"?true',
 ]
 
 CHECKPOINT_PATTERNS = [
@@ -68,6 +80,10 @@ def read_payload() -> dict[str, Any]:
         return {}
 
 
+def tool_name(payload: dict[str, Any]) -> str:
+    return str((payload.get("toolCall") or {}).get("name", "")).lower()
+
+
 def searchable_text(payload: dict[str, Any]) -> str:
     tool_call = payload.get("toolCall") or {}
     return json.dumps(
@@ -92,56 +108,61 @@ def matches_any(text: str, patterns: list[str]) -> bool:
     return any(re.search(pattern, text, re.IGNORECASE) for pattern in patterns)
 
 
+def is_sprite_exec(payload: dict[str, Any]) -> bool:
+    # The Sprites MCP command-runner is exposed as `exec` (bare or prefixed).
+    # Local shells (`run_command`) and read-only exec helpers (`exec_list`,
+    # `exec_kill`) must not trigger the checkpoint nudge.
+    return bool(re.search(r"exec$", tool_name(payload)))
+
+
 def respond(obj: dict[str, Any]) -> None:
     sys.stdout.write(json.dumps(obj))
 
 
 def allow() -> None:
-    respond({"allow_tool": True})
+    respond({"decision": "allow"})
 
 
-def deny(reason: str) -> None:
-    respond({"allow_tool": False, "deny_reason": reason})
+def ask(reason: str) -> None:
+    respond({"decision": "ask", "reason": reason})
 
 
 def safety(payload: dict[str, Any]) -> None:
     text = searchable_text(payload)
     if matches_any(text, DESTRUCTIVE_PATTERNS):
-        deny(
-            "This Sprites action may destroy state, restore over newer work, "
-            "or expose a service/network policy. Confirm the exact Sprite, "
-            "scope, and rollback plan before continuing."
+        ask(
+            "This Sprites action may destroy state, restore over newer work, or "
+            "change network/access policy. Confirm the exact Sprite, scope, and "
+            "rollback plan before continuing."
+        )
+        return
+    if matches_any(text, EXPOSURE_PATTERNS):
+        ask(
+            "This looks like it widens Sprite exposure (public URL or network "
+            "policy). Confirm the intended audience and auth before continuing."
         )
         return
     allow()
 
 
 def checkpoint(payload: dict[str, Any]) -> None:
-    text = command_line(payload)
-    if matches_any(text, CHECKPOINT_PATTERNS):
-        deny(
-            "This looks like a high-risk Sprite change. Create or verify a "
-            "recent checkpoint before proceeding."
+    if is_sprite_exec(payload) and matches_any(command_line(payload), CHECKPOINT_PATTERNS):
+        ask(
+            "This looks like a high-risk change inside a Sprite. Create or "
+            "verify a recent checkpoint before proceeding."
         )
         return
     allow()
 
 
 def remote_test(payload: dict[str, Any]) -> None:
-    text = command_line(payload)
-    if matches_any(text, TEST_PATTERNS):
-        deny(
-            "Remote Sprite test routing is enabled. Run this test inside the "
-            "selected Sprite with the Sprites MCP exec tool unless the user "
-            "explicitly wants a local run."
+    if matches_any(command_line(payload), TEST_PATTERNS):
+        ask(
+            "Remote Sprite test routing is enabled. Prefer running this test "
+            "inside the selected Sprite with the Sprites MCP exec tool unless "
+            "the user explicitly wants a local run."
         )
         return
-    allow()
-
-
-def auto_sync(_: dict[str, Any]) -> None:
-    # PostToolUse hooks cannot directly call MCP tools. Keep this disabled by
-    # default and use it as a visible reminder when a workspace opts in.
     allow()
 
 
@@ -155,8 +176,6 @@ def main() -> int:
         checkpoint(payload)
     elif mode == "remote-test":
         remote_test(payload)
-    elif mode == "auto-sync":
-        auto_sync(payload)
     else:
         allow()
 
